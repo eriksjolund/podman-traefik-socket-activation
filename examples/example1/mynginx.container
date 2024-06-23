@@ -1,0 +1,5 @@
+[Container]
+Image=docker.io/library/nginx
+ContainerName=mynginx
+Network=mynet.network
+Label="traefik.enable=true"
