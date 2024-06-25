@@ -18,8 +18,10 @@ See https://github.com/eriksjolund/podman-nginx-socket-activation?tab=readme-ov-
 
 The traefik project is [planning](https://github.com/traefik/traefik/pull/10399#issuecomment-2133376924) to add _socket activation_ support in traefik v3.1.0 (which has not yet been released).
 
-It's possible to try out the new _socket activation_ functionality by building
-https://github.com/traefik/traefik/pull/10399
+It's possible to try out the new _socket activation_ functionality by building the traefik git branch _master_.
+The functionality was added in the pull request:
+
+* https://github.com/traefik/traefik/pull/10399
 
 Sketchy instructions of how I built an arm64 traefik container (from PR 10399): <details><summary>Click me</summary>
 
