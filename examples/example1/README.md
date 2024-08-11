@@ -19,11 +19,13 @@ Configure _socket activation_ for TCP port 8080.
    ```
 1. Create directories
    ```
-   $ mkdir -p ~/.config/systemd/user
-   $ mkdir -p ~/.config/containers/systemd
+   mkdir -p ~/.config/systemd/user
+   mkdir -p ~/.config/containers/systemd
    ```
-1. Pull or build the a traefik container image (that has _socket activation_ support) and tag it as _localhost/traefik_
-   For details, see the section [_Build or pull the traefik container image_](../../README.md#build-or-pull-the-traefik-container-image).
+1. Pull the traefik container image
+   ```
+   podman pull docker.io/library/traefik
+   ```
 1. Clone git repo
    ```
    git clone https://github.com/eriksjolund/podman-traefik-socket-activation.git
