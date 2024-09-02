@@ -6,13 +6,27 @@ return to [main page](../..)
 graph TB
 
     a1[curl] -.->a2[traefik container reverse proxy]
-    a2 -->|"for http://mynginx"| a3["nginx container"]
+    a2 -->|"for http://whoami"| a3["whoami container"]
 ```
 
 Set up a systemd user service _example1.service_ for the user _test_ where rootless podman is running the container image _localhost/traefik_.
-Configure _socket activation_ for TCP port 8080.
+Configure _socket activation_ for TCP ports 80 and 443.
 
-1. Log in to user _test_
+1. Verify that unprivileged users are allowed to open port numbers 80 and above.
+   Run the command
+   ```
+   cat /proc/sys/net/ipv4/ip_unprivileged_port_start
+   ```
+   Make sure the number printed is not higher than 80. To configure the number,
+   see https://rootlesscontaine.rs/getting-started/common/sysctl/#allowing-listening-on-tcp--udp-ports-below-1024
+1. Create a test user
+   ```
+   sudo useradd test
+   ```
+1. Open a shell for user _test_
+   ```
+   sudo machinectl shell --uid=test
+   ```
 1. Optional step: enable lingering to avoid services from being stopped when the user _test_ logs out.
    ```
    loginctl enable-linger test
@@ -26,6 +40,10 @@ Configure _socket activation_ for TCP port 8080.
    ```
    podman pull docker.io/library/traefik
    ```
+1. Pull the _whoami_ container image
+   ```
+   podman pull docker.io/traefik/whoami
+   ```
 1. Clone git repo
    ```
    git clone https://github.com/eriksjolund/podman-traefik-socket-activation.git
@@ -33,17 +51,17 @@ Configure _socket activation_ for TCP port 8080.
 1. Install the container unit files
    ```
    cp podman-traefik-socket-activation/examples/example1/*.container \
-      ~/.config/containers/systemd
+      ~/.config/containers/systemd/
    ```
 1. Install the network unit file
    ```
    cp podman-traefik-socket-activation/examples/example1/mynet.network \
-      ~/.config/containers/systemd
+      ~/.config/containers/systemd/
    ```
-1. Install the socket unit file
+1. Install the socket unit files
    ```
-   cp podman-traefik-socket-activation/examples/example1/mytraefik.socket \
-      ~/.config/systemd/user
+   cp podman-traefik-socket-activation/examples/example1/*.socket \
+      ~/.config/systemd/user/
    ```
 1. Reload the systemd user manager
    ```
@@ -54,53 +72,131 @@ Configure _socket activation_ for TCP port 8080.
    ```
    systemctl --user start podman.socket
    ```
-1. Start the nginx container
+1. Start the socket for TCP port 80
    ```
-   systemctl --user start mynginx.service
+   systemctl --user start http.socket
    ```
-1. Start the traefik socket
+1. Start the socket for TCP port 443
    ```
-   systemctl --user start mytraefik.socket
+   systemctl --user start https.socket
    ```
-1. Download a web page __http://mynginx__ from the traefik
-   container and see that the request is proxied to the container _mynginx_.
+1. Start the _whoami_ container
    ```
-   $ curl -s --resolve mynginx:8080:127.0.0.1 http://mynginx:8080 | head -4
-   <!DOCTYPE html>
-   <html>
-   <head>
-   <title>Welcome to nginx!</title>
+   systemctl --user start whoami.service
    ```
-   Instead of using the curl __--resolve__ option, it is also possible
-   to set the HTTP header directly to achieve the same HTTP request
+1. Download a web page __http://whoami__ from the traefik
+   container and see that the request is proxied to the container _whoami_.
+   Resolve _whoami_ to _127.0.0.1_..
    ```
-   $ curl -s --header "Host: mynginx" http://127.0.0.1:8080 | head -4
-   <!DOCTYPE html>
-   <html>
-   <head>
-   <title>Welcome to nginx!</title>
+   $ curl -s --resolve whoami:80:127.0.0.1 http://whoami:80
+   Hostname: 0315603f400d
+   IP: 127.0.0.1
+   IP: ::1
+   IP: 10.89.0.2
+   IP: fe80::18fe:c3ff:fe9e:d8ee
+   RemoteAddr: 10.89.0.3:37168
+   GET / HTTP/1.1
+   Host: whoami
+   User-Agent: curl/8.6.0
+   Accept: */*
+   Accept-Encoding: gzip
+   X-Forwarded-For: 127.0.0.1
+   X-Forwarded-Host: whoami
+   X-Forwarded-Port: 80
+   X-Forwarded-Proto: http
+   X-Forwarded-Server: 046d07b93fc9
+   X-Real-Ip: 127.0.0.1
    ```
+   __result:__ The IPv4 address  127.0.0.1 matches the IP address of _X-Forwarded-For_ and _X-Real-Ip_
+1. Check the IPv4 address of the main network interface.
+   Run the command
+   ```
+   hostname -I
+   ```
+   The following output is printed
+   ```
+   192.168.10.108 192.168.39.1 192.168.122.1 fd25:c7f8:948a:0:912d:3900:d5c4:45ad
+   ```
+   __result:__ The IPv4 address of the main network interface is _192.168.10.108_ (the address furthest to the left)
+1. Download a web page __http://whoami__ from the traefik
+   container and see that the request is proxied to the container _whoami_.
+   Resolve _whoami_ to the IP address of the main network interface.
+   Run the command
+   ```
+   curl --resolve whoami:80:192.168.10.108 http://whoami
+   ```
+   The following output is printed
+   ```
+   Hostname: 0315603f400d
+   IP: 127.0.0.1
+   IP: ::1
+   IP: 10.89.0.2
+   IP: fe80::18fe:c3ff:fe9e:d8ee
+   RemoteAddr: 10.89.0.3:37168
+   GET / HTTP/1.1
+   Host: whoami
+   User-Agent: curl/8.6.0
+   Accept: */*
+   Accept-Encoding: gzip
+   X-Forwarded-For: 192.168.10.108
+   X-Forwarded-Host: whoami
+   X-Forwarded-Port: 80
+   X-Forwarded-Proto: http
+   X-Forwarded-Server: 046d07b93fc9
+   X-Real-Ip: 192.168.10.108
+   ```
+   __result:__ The IPv4 address of the main network interface, _ 192.168.10.108_, matches the IPv4 address
+   of _X-Forwarded-For_ and _X-Real-Ip_
+1. From another computer download a web page __http://whoami__ from the traefik
+   container and see that the request is proxied to the container _whoami_.
+   ```
+   curl --resolve whoami:80:192.168.10.108 http://whoami
+   ```
+   The following output is printed
+   ```
+   Hostname: 0315603f400d
+   IP: 127.0.0.1
+   IP: ::1
+   IP: 10.89.0.2
+   IP: fe80::18fe:c3ff:fe9e:d8ee
+   RemoteAddr: 10.89.0.3:42586
+   GET / HTTP/1.1
+   Host: whoami
+   User-Agent: curl/8.7.1
+   Accept: */*
+   Accept-Encoding: gzip
+   X-Forwarded-For: 192.168.10.161
+   X-Forwarded-Host: whoami
+   X-Forwarded-Port: 80
+   X-Forwarded-Proto: http
+   X-Forwarded-Server: 046d07b93fc9
+   X-Real-Ip: 192.168.10.161
+   ```
+   Check the IP address of the other computer (which in this example runs macOS).
+   In the macOS terminal run the command
+   ```
+   ipconfig getifaddr en0
+   ```
+   The following output is printed
+   ```
+   192.168.10.161
+   ```
+   __result:__ The IPv4 address of the other computer matches the IPv4 address of _X-Forwarded-For_ and _X-Real-Ip_
 
-### Discussion
+### Using `Internal=true`
 
-The default configuration for _ip_unprivileged_port_start_ was used
+The file [_mynet.network_](mynet.network) currently contains
 
 ```
-$ cat /proc/sys/net/ipv4/ip_unprivileged_port_start
-1024
+[Network]
+Internal=true
 ```
-TCP port 8080 is thus an unprivileged port.
 
-To use the method described in Example 1 for TCP port 80 instead, you need to
-modify the Linux kernel setting _ip_unprivileged_port_start_ to the number
-80 or less.
+The line
 
-Create the file  _/etc/sysctl.d/99-unprivileged-port.conf_ with the contents
 ```
-net.ipv4.ip_unprivileged_port_start=80
+Internal=true
 ```
-Reload sysctl configuration
-```
-sudo sysctl --system
-```
-Note that any user on the system could then bind to port 80 if it is unused.
+
+prevents containers on the network to connect to the internet.
+To allow Containers on the network to download files from the internet you would need to remove the line.

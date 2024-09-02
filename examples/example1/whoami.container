@@ -1,5 +1,5 @@
 [Container]
-Image=docker.io/library/nginx
-ContainerName=mynginx
+Image=docker.io/traefik/whoami
+ContainerName=whoami
 Network=mynet.network
 Label="traefik.enable=true"
