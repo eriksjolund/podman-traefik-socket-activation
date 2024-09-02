@@ -1,6 +1,13 @@
+[Unit]
+After=http.socket https.socket
+Requires=http.socket https.socket
+
+[Service]
+Sockets=http.socket https.socket
+
 [Container]
 Image=docker.io/library/traefik
-Exec=--entrypoints.web --providers.docker --providers.docker.exposedbydefault=false
+Exec=--entrypoints.web --entrypoints.websecure --providers.docker --providers.docker.exposedbydefault=false
 Network=mynet.network
 Volume=%t/podman/podman.sock:/var/run/docker.sock
 SecurityLabelDisable=true

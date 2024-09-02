@@ -6,9 +6,9 @@ See also the tutorials [Podman socket activation](https://github.com/containers/
 
 Overview of the examples
 
-| Example | Type of service | Port | Using quadlet | rootful/rootless podman | Comment |
+| Example | Type of service | Ports | Using quadlet | rootful/rootless podman | Comment |
 | --      | --              |   -- | --      | --   | --  |
-| [Example 1](examples/example1) | systemd user service | 8080 | yes | rootless podman | |
+| [Example 1](examples/example1) | systemd user service | 80, 443 | yes | rootless podman | |
 
 ### Advantages of using rootless Podman with socket activation
 
