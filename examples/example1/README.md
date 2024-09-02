@@ -145,7 +145,7 @@ Configure _socket activation_ for TCP ports 80 and 443.
    X-Forwarded-Server: 046d07b93fc9
    X-Real-Ip: 192.168.10.108
    ```
-   __result:__ The IPv4 address of the main network interface, _ 192.168.10.108_, matches the IPv4 address
+   __result:__ The IPv4 address of the main network interface, _192.168.10.108_, matches the IPv4 address
    of _X-Forwarded-For_ and _X-Real-Ip_
 1. From another computer download a web page __http://whoami__ from the traefik
    container and see that the request is proxied to the container _whoami_.
