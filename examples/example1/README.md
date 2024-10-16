@@ -86,7 +86,7 @@ Configure _socket activation_ for TCP ports 80 and 443.
    ```
 1. Download a web page __http://whoami__ from the traefik
    container and see that the request is proxied to the container _whoami_.
-   Resolve _whoami_ to _127.0.0.1_..
+   Resolve _whoami_ to _127.0.0.1_.
    ```
    $ curl -s --resolve whoami:80:127.0.0.1 http://whoami:80
    Hostname: 0315603f400d
