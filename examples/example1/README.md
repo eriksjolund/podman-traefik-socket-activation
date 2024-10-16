@@ -6,7 +6,7 @@ return to [main page](../..)
 graph TB
 
     a1[curl] -.->a2[traefik container reverse proxy]
-    a2 -->|"for http://whoami"| a3["whoami container"]
+    a2 -->|"for http&colon;//whoami"| a3["whoami container"]
 ```
 
 Set up a systemd user service _example1.service_ for the user _test_ where rootless podman is running the container image _localhost/traefik_.
