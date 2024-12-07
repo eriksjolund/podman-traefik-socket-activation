@@ -182,6 +182,10 @@ Configure _socket activation_ for TCP ports 80 and 443.
    192.168.10.161
    ```
    __result:__ The IPv4 address of the other computer matches the IPv4 address of _X-Forwarded-For_ and _X-Real-Ip_
+   
+   __troubleshooting tip:__ If the curl command fails with `Connection timed out` or `Connection refused`,
+   then there is probably a firewall blocking the connection. How to open up the firewall is beyond
+   the scope of this tutorial.
 
 ### Using `Internal=true`
 
