@@ -1,5 +1,5 @@
 [Container]
 Image=docker.io/traefik/whoami
-ContainerName=whoami
+ContainerName=whoami.example.com
 Network=mynet.network
 Label="traefik.enable=true"
