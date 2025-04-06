@@ -67,6 +67,12 @@ Configure _socket activation_ for TCP ports 80 and 443.
    ```
    systemctl --user daemon-reload
    ```
+   This triggers __systemd__ to execute the generator `/usr/lib/systemd/user-generators/podman-user-generator`
+   that will generate systemd user service unit files out of the quadlet files (that is the files
+   having filenames ending with _.container_, _.volume_ and _.network_).
+   The generated files are written to the directory `/run/user/<USERID>/systemd/generator`.
+   For details, see [_podman-systemd.unit(5)_](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
+   and [_systemd.generator(7)_](https://www.freedesktop.org/software/systemd/man/latest/systemd.generator.html).
 1. Start the podman socket. (The path to the unix socket is `$XDG_RUNTIME_DIR/podman/podman.sock` which
    would for example expand to _/run/user/1003/podman/podman.sock_ if the UID of the user _test_ is 1003)
    ```
