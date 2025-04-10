@@ -6,7 +6,7 @@ return to [main page](../..)
 graph TB
 
     a1[curl] -.->a2[traefik container reverse proxy]
-    a2 -->|"for http&colon;//whoami"| a3["whoami container"]
+    a2 -->|"for http&colon;//whoami.example.com"| a3["whoami container"]
 ```
 
 Set up a systemd user service _example1.service_ for the user _test_ where rootless podman is running the container image _localhost/traefik_.
@@ -53,9 +53,16 @@ Configure _socket activation_ for TCP ports 80 and 443.
    cp podman-traefik-socket-activation/examples/example1/*.container \
       ~/.config/containers/systemd/
    ```
+1. Edit _~/.config/containers/systemd/whoami.container_ so that _whoami.example.com_ is replaced with a hostname that is
+   resolved by DNS to the IP address of your computer.
 1. Install the network unit file
    ```
    cp podman-traefik-socket-activation/examples/example1/mynet.network \
+      ~/.config/containers/systemd/
+   ```
+1. Install the volume unit file
+   ```
+   cp podman-traefik-socket-activation/examples/example1/traefik_acme.volume \
       ~/.config/containers/systemd/
    ```
 1. Install the socket unit files
@@ -100,11 +107,11 @@ Configure _socket activation_ for TCP ports 80 and 443.
    sleep 3
    ```
    This is also related to traefik issue [7347](https://github.com/traefik/traefik/issues/7347). Traefik sends `READY=1` before traefik is ready.
-1. Download a web page __http://whoami__ from the traefik
-   container and see that the request is proxied to the container _whoami_.
-   Resolve _whoami_ to _127.0.0.1_.
+1. Download a web page __http://whoami.example.com__ from the traefik
+   container and see that the request is proxied to the whoami container.
+   Resolve _whoami.example.com_ to _127.0.0.1_.
    ```
-   $ curl -s --resolve whoami:80:127.0.0.1 http://whoami:80
+   $ curl -s --resolve whoami.example.com:80:127.0.0.1 http://whoami.example.com:80
    Hostname: 0315603f400d
    IP: 127.0.0.1
    IP: ::1
@@ -117,7 +124,7 @@ Configure _socket activation_ for TCP ports 80 and 443.
    Accept: */*
    Accept-Encoding: gzip
    X-Forwarded-For: 127.0.0.1
-   X-Forwarded-Host: whoami
+   X-Forwarded-Host: whoami.example.com
    X-Forwarded-Port: 80
    X-Forwarded-Proto: http
    X-Forwarded-Server: 046d07b93fc9
@@ -134,12 +141,12 @@ Configure _socket activation_ for TCP ports 80 and 443.
    192.168.10.108 192.168.39.1 192.168.122.1 fd25:c7f8:948a:0:912d:3900:d5c4:45ad
    ```
    __result:__ The IPv4 address of the main network interface is _192.168.10.108_ (the address furthest to the left)
-1. Download a web page __http://whoami__ from the traefik
-   container and see that the request is proxied to the container _whoami_.
-   Resolve _whoami_ to the IP address of the main network interface.
+1. Download a web page __http://whoami.example.com__ from the traefik
+   container and see that the request is proxied to the whoami container.
+   Resolve _whoami.example.com_ to the IP address of the main network interface.
    Run the command
    ```
-   curl --resolve whoami:80:192.168.10.108 http://whoami
+   curl --resolve whoami.example.com:80:192.168.10.108 http://whoami.example.com
    ```
    The following output is printed
    ```
@@ -155,7 +162,7 @@ Configure _socket activation_ for TCP ports 80 and 443.
    Accept: */*
    Accept-Encoding: gzip
    X-Forwarded-For: 192.168.10.108
-   X-Forwarded-Host: whoami
+   X-Forwarded-Host: whoami.example.com
    X-Forwarded-Port: 80
    X-Forwarded-Proto: http
    X-Forwarded-Server: 046d07b93fc9
@@ -163,10 +170,10 @@ Configure _socket activation_ for TCP ports 80 and 443.
    ```
    __result:__ The IPv4 address of the main network interface, _192.168.10.108_, matches the IPv4 address
    of _X-Forwarded-For_ and _X-Real-Ip_
-1. From another computer download a web page __http://whoami__ from the traefik
-   container and see that the request is proxied to the container _whoami_.
+1. From another computer download a web page __http://whoami.example.com__ from the traefik
+   container and see that the request is proxied to the whoami container.
    ```
-   curl --resolve whoami:80:192.168.10.108 http://whoami
+   curl --resolve whoami.example.com:80:192.168.10.108 http://whoami.example.com
    ```
    The following output is printed
    ```
@@ -182,7 +189,7 @@ Configure _socket activation_ for TCP ports 80 and 443.
    Accept: */*
    Accept-Encoding: gzip
    X-Forwarded-For: 192.168.10.161
-   X-Forwarded-Host: whoami
+   X-Forwarded-Host: whoami.example.com
    X-Forwarded-Port: 80
    X-Forwarded-Proto: http
    X-Forwarded-Server: 046d07b93fc9

@@ -7,8 +7,20 @@ Sockets=http.socket https.socket
 
 [Container]
 Image=docker.io/library/traefik
-Exec=--entrypoints.web --entrypoints.websecure --providers.docker --providers.docker.exposedbydefault=false
+Exec=--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory \
+     --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web \
+     --certificatesresolvers.myresolver.acme.httpchallenge=true \
+     --certificatesresolvers.myresolver.acme.storage=/acme/acme.json \
+     --entrypoints.web \
+     --entrypoints.websecure \
+     --entrypoints.websecure.http.tls.certresolver=myresolver \
+     --providers.docker \
+     --providers.docker.exposedbydefault=false
+
+# maybe add  --certificatesresolvers.myresolver.acme.email=email@example.com
+
 Network=mynet.network
 Notify=true
 Volume=%t/podman/podman.sock:/var/run/docker.sock
+Volume=traefik_acme.volume:/acme:Z
 SecurityLabelDisable=true

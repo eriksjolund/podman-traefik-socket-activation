@@ -1,7 +1,8 @@
 [Socket]
 
-ListenStream=0.0.0.0:443
+BindIPv6Only=both
 FileDescriptorName=websecure
+ListenStream=[::]:443
 Service=mytraefik.service
 
 [Install]
