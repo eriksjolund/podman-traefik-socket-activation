@@ -1,6 +1,6 @@
 [Socket]
 
-ListenStream=0.0.0.0:80
+ListenStream=80
 FileDescriptorName=web
 Service=mytraefik.service
 
