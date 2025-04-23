@@ -1,6 +1,6 @@
 [Socket]
 
-ListenStream=0.0.0.0:443
+ListenStream=443
 FileDescriptorName=websecure
 Service=mytraefik.service
 
