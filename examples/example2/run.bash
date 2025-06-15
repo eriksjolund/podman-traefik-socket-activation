@@ -10,8 +10,7 @@ podman run --rm -v ~/ca.crt:/root/ca.crt:Z --network=mynet localhost/curl curl -
 
 echo
 echo 2. connect from outside the custom network to the socket-activated sockets and use HTTP/3
-# disabled as it does not work
-#podman run --rm -v ~/ca.crt:/root/ca.crt:Z --add-host whoami.example.com:host-gateway localhost/curl curl --cacert /root/ca.crt --http3-only -s https://whoami.example.com
+podman run --rm -v ~/ca.crt:/root/ca.crt:Z --add-host whoami.example.com:host-gateway localhost/curl curl --cacert /root/ca.crt --http3-only -s https://whoami.example.com
 
 echo
 echo _________ test HTTP2 __________

@@ -9,7 +9,7 @@ Sockets=http.socket https.socket
 NetworkAlias=whoami.example.com
 NoNewPrivileges=true
 ReadOnly=true
-Image=docker.io/library/traefik
+Image=docker.io/traefik/traefik
 Network=mynet.network
 
 Volume=%h/traefik.yaml:/etc/traefik/traefik.yml:Z

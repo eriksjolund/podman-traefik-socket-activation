@@ -4,12 +4,6 @@ set -o errexit
 set -o nounset
 
 imagedir=$1
-variant=$2
-
-if [ $variant != "http3-outside" -a $variant != "http3-inside" ]; then
-    echo invalid variant: $2
-    exit 1
-fi
 
 mkdir -p ~/.config/containers/systemd
 mkdir -p ~/.config/systemd/user
@@ -19,7 +13,7 @@ cp https.socket ~/.config/systemd/user
 cp traefik.container ~/.config/containers/systemd
 cp whoami.container ~/.config/containers/systemd
 cp mynet.network ~/.config/containers/systemd
-cp $variant/traefik.yaml ~/
+cp traefik.yaml ~/
 cp file.yaml ~/
 
 for i in traefik.oci whoami.oci curl.oci; do
