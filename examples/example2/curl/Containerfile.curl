@@ -1,0 +1,3 @@
+FROM docker.io/library/debian:testing
+# curl installed in this way supports HTTP/3
+RUN apt-get update && apt-get install -y curl

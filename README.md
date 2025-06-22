@@ -8,7 +8,8 @@ Overview of the examples
 
 | Example | Type of service | Ports | Using quadlet | rootful/rootless podman | Comment |
 | --      | --              |   -- | --      | --   | --  |
-| [Example 1](examples/example1) | systemd user service | 80, 443 | yes | rootless podman | |
+| [Example 1](examples/example1) | systemd user service | TCP/80, TCP/443 | yes | rootless podman | |
+| [Example 2](examples/example2) | systemd user service | TCP/80, TCP/443, UDP/443 | yes | rootless podman | HTTP/3 served both to the internet and to the custom network. Self-signed TLS |
 
 ### Advantages of using rootless Podman with socket activation
 

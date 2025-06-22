@@ -1,0 +1,29 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /server.crt
+        keyFile: /server.key
+  certificates:
+    - certFile: /server.crt
+      keyFile: /server.key
+      stores:
+        -default
+http:
+  services:
+    whoami:
+      loadBalancer:
+        servers:
+        - url: http://whoami/
+        passHostHeader: false
+  routers:
+    router0:
+      entryPoints:
+      - websecure
+      service: whoami
+      rule: Host(`whoami.example.com`)
+    router1:
+      entryPoints:
+      - websecure2
+      service: whoami
+      rule: Host(`whoami.example.com`)

@@ -1,0 +1,21 @@
+[Unit]
+After=http.socket https.socket podman.socket
+Requires=http.socket https.socket podman.socket
+
+[Service]
+Sockets=http.socket https.socket
+
+[Container]
+NetworkAlias=whoami.example.com
+NoNewPrivileges=true
+ReadOnly=true
+Image=docker.io/traefik/traefik
+Network=mynet.network
+
+Volume=%h/traefik.yaml:/etc/traefik/traefik.yml:Z
+Volume=%h/server.key:/server.key:Z
+Volume=%h/server.crt:/server.crt:Z
+Volume=%h/file.yaml:/file.yaml:Z
+Notify=true
+Volume=%t/podman/podman.sock:/var/run/docker.sock
+SecurityLabelDisable=true

@@ -1,0 +1,7 @@
+[Socket]
+ListenStream=80
+FileDescriptorName=web
+Service=traefik.service
+
+[Install]
+WantedBy=sockets.target
