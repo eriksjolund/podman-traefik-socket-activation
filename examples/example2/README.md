@@ -2,8 +2,9 @@
 
 > [!IMPORTANT]
 > This example does not work with the official container image docker.io/traefik/traefik
-> because of the issue https://github.com/traefik/traefik/issues/11805
-> The example should work if you build the container image from https://github.com/eriksjolund/traefik/tree/fix-issue-11805-v2
+> because that container does not yet include https://github.com/traefik/traefik/pull/11848
+> which fixes the issue https://github.com/traefik/traefik/issues/11805
+> The example should work if you build the container image from https://github.com/traefik/traefik/tree/v3.4
 
 Requirement:
 
