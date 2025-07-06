@@ -12,13 +12,19 @@ graph TB
 Set up a systemd user service _example1.service_ for the user _test_ where rootless podman is running the container image _localhost/traefik_.
 Configure _socket activation_ for TCP ports 80 and 443.
 
-1. Verify that unprivileged users are allowed to open port numbers 80 and above.
-   Run the command
+
+Requirements:
+
+* podman 4.4.0 or later (needed for using [quadlets](https://www.redhat.com/en/blog/quadlet-podman)). Not strictly needed for this example but podman 5.3.0 or later is recommended because then `AddHost=postgres.example.com:host-gateway`, `host.containers.internal` or `host.docker.internal` could be used to let a container on the custom network connect to a service that is listening on the host's main network interface. For details, see [Outbound TCP/UDP connections to the host's main network interface (e.g eth0)](https://github.com/eriksjolund/podman-networking-docs?tab=readme-ov-file#outbound-tcpudp-connections-to-the-hosts-main-network-interface-eg-eth0)
+
+* `ip_unprivileged_port_start` ≤ 80
+
+   Verify that [`ip_unprivileged_port_start`](https://github.com/eriksjolund/podman-networking-docs#configure-ip_unprivileged_port_start) is less than or equal to 80
    ```
-   cat /proc/sys/net/ipv4/ip_unprivileged_port_start
+   $ cat /proc/sys/net/ipv4/ip_unprivileged_port_start
+   80
    ```
-   Make sure the number printed is not higher than 80. To configure the number,
-   see https://rootlesscontaine.rs/getting-started/common/sysctl/#allowing-listening-on-tcp--udp-ports-below-1024
+
 1. Create a test user
    ```
    sudo useradd test

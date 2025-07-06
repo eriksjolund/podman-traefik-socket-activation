@@ -6,13 +6,17 @@
 > which fixes the issue https://github.com/traefik/traefik/issues/11805
 > The example should work if you build the container image from https://github.com/traefik/traefik/tree/v3.4
 
-Requirement:
+Requirements:
 
-```
-$ cat /proc/sys/net/ipv4/ip_unprivileged_port_start
-80
-```
-Make sure the number is 80 or less.
+* podman 5.2.0 or later (needed for [`NetworkAlias=`](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#networkalias)). Not strictly needed for this example but podman 5.3.0 or later is recommended because then `AddHost=postgres.example.com:host-gateway`, `host.containers.internal` or `host.docker.internal` could be used to let a container on the custom network connect to a service that is listening on the host's main network interface. For details, see [Outbound TCP/UDP connections to the host's main network interface (e.g eth0)](https://github.com/eriksjolund/podman-networking-docs?tab=readme-ov-file#outbound-tcpudp-connections-to-the-hosts-main-network-interface-eg-eth0)
+
+* `ip_unprivileged_port_start` ≤ 80
+
+   Verify that [`ip_unprivileged_port_start`](https://github.com/eriksjolund/podman-networking-docs#configure-ip_unprivileged_port_start) is less than or equal to 80
+   ```
+   $ cat /proc/sys/net/ipv4/ip_unprivileged_port_start
+   80
+   ```
 
 Design goal:
 The traefik container serves HTTP/3 on the socket-activated sockets.
