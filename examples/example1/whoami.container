@@ -3,3 +3,4 @@ Image=docker.io/traefik/whoami
 ContainerName=whoami
 Network=mynet.network
 Label="traefik.enable=true"
+Label="traefik.http.routers.whoami.rule=Host(`whoami.example.com`)"
