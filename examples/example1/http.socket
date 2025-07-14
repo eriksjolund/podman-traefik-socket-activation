@@ -2,7 +2,7 @@
 
 ListenStream=80
 FileDescriptorName=web
-Service=mytraefik.service
+Service=traefik.service
 
 [Install]
 WantedBy=sockets.target

@@ -2,7 +2,7 @@
 
 ListenStream=443
 FileDescriptorName=websecure
-Service=mytraefik.service
+Service=traefik.service
 
 [Install]
 WantedBy=sockets.target
