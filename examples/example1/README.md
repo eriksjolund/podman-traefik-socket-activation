@@ -98,7 +98,7 @@ Requirements:
    ```
 1. Start the _traefik_ container
    ```
-   systemctl --user start mytraefik.service
+   systemctl --user start traefik.service
    ```
    This step was added due to traefik issue [7347](https://github.com/traefik/traefik/issues/7347).
 1. Wait a few seconds
