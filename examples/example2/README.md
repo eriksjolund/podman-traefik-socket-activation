@@ -1,11 +1,5 @@
 # HTTP/3 example
 
-> [!IMPORTANT]
-> This example does not work with the official container image docker.io/traefik/traefik
-> because that container does not yet include https://github.com/traefik/traefik/pull/11848
-> which fixes the issue https://github.com/traefik/traefik/issues/11805
-> The example should work if you build the container image from https://github.com/traefik/traefik/tree/v3.4
-
 Requirements:
 
 * podman 5.2.0 or later (needed for [`NetworkAlias=`](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#networkalias)). Not strictly needed for this example but podman 5.3.0 or later is recommended because then `AddHost=postgres.example.com:host-gateway`, `host.containers.internal` or `host.docker.internal` could be used to let a container on the custom network connect to a service that is listening on the host's main network interface. For details, see [Outbound TCP/UDP connections to the host's main network interface (e.g eth0)](https://github.com/eriksjolund/podman-networking-docs?tab=readme-ov-file#outbound-tcpudp-connections-to-the-hosts-main-network-interface-eg-eth0)
@@ -34,18 +28,10 @@ websecure2
    ```
    imagedir=$(mktemp -d)
    ```
-1. Prepare container images.
+2. Prepare container images.
    ```
    bash prepare-images.bash $imagedir
    ```
-2. This step will be removed in the future when https://github.com/traefik/traefik/issues/11805 has been fixed.
-   Build the container image docker.io/traefik/traefik from https://github.com/eriksjolund/traefik/tree/fix-issue-11805-v2
-   with docker and save it to $imagedir/traefik.oci
-   ```
-   docker save -o "$imagedir/traefik.oci" traefik/traefik
-   ```
-   (This step makes it easier to run the installation procedure for a new user because we can reuse
-   a previously built container image)
 3. Set up quadlets and start the services
    ```
    bash install.bash $imagedir
