@@ -6,6 +6,9 @@ serversTransport:
   insecureSkipVerify: true
 
 entryPoints:
+  # The name "web" matches
+  # the setting "FileDescriptorName=web" in the file http.socket
+  # Traefik inherits the socket from systemd (the parent process).
   web:
     address: 0.0.0.0:80
     http:
@@ -13,6 +16,8 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
+  # The name "web2" is not defined in any systemd socket unit.
+  # Traefik creates the socket.
   web2:
     address: 0.0.0.0:80
     http:
@@ -20,11 +25,16 @@ entryPoints:
         entryPoint:
           to: websecure2
           scheme: https
+  # The name "websecure" matches
+  # the setting "FileDescriptorName=websecure" in the file https.socket
+  # Traefik inherits the sockets from systemd (the parent process).
   websecure:
     address: 0.0.0.0:443
     http:
       tls: {}
     http3: true
+  # The name "websecure2" is not defined in any systemd socket unit.
+  # Traefik creates the sockets.
   websecure2:
     address: 0.0.0.0:443
     http:
