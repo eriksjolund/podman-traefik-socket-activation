@@ -2,6 +2,7 @@
 ListenStream=80
 FileDescriptorName=web
 Service=traefik.service
+NoDelay=yes
 
 [Install]
 WantedBy=sockets.target
