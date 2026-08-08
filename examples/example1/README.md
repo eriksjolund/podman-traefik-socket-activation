@@ -215,7 +215,7 @@ The file [_mynet.network_](mynet.network) currently contains
 
 ```
 [Network]
-Options=isolate=true
+Options=isolate=strict
 Internal=true
 ```
 
