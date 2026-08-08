@@ -1,4 +1,4 @@
 [Network]
 NetworkName=mynet
-Options=isolate=true
+Options=isolate=strict
 # Internal=true
